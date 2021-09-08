@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -7,22 +8,17 @@ import { Observable, Subscription } from 'rxjs';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'rxjs';
-  subscription$ : Subscription | null = null;
+  searchString : string = "";
+  searchSubject$: Subject<string> = new Subject<string>();
+  subscription$: Subscription | null = null;
 
   ngOnInit() : void {
-    const observable$ : Observable<any> = new Observable( (observer) => {
-      observer.next(1);
-      observer.next(2);
-      observer.next(3);
-      observer.complete();
-    });
+    this.subscription$ = this.searchSubject$.pipe(debounceTime(1000)).subscribe( x => console.log('buscando... ', x))
+  }
 
-    this.subscription$ = observable$.subscribe(
-      ( value: any)  => console.log(value),
-      ( err: any) => {},
-      () => console.info( "completed!" )
-    );
+  inputChanged($event: any) {
+    console.info( "entrada teclado: ", $event );
+    this.searchSubject$.next($event);
   }
 
   ngOnDestroy() : void {
