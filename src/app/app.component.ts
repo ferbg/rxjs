@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -8,24 +9,17 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class AppComponent {
   title = 'rxjs';
-  subscription$ : Subscription | null = null;
+  subscription : Subscription | null = null;
 
   ngOnInit() : void {
-    const observable$ : Observable<any> = new Observable( (observer) => {
-      observer.next(1);
-      observer.next(2);
-      observer.next(3);
-      observer.complete();
-    });
-
-    this.subscription$ = observable$.subscribe(
-      ( value: any)  => console.log(value),
-      ( err: any) => {},
-      () => console.info( "completed!" )
-    );
+    const source = fromEvent(document, 'click');
+    //map to string with given event timestamp
+    const example$ = source.pipe(map(( event : Event ) => `Event time: ${event.timeStamp}`));
+    //output (example): 'Event time: 7276.390000000001'
+    this.subscription = example$.subscribe(val => console.log(val));
   }
 
   ngOnDestroy() : void {
-    this.subscription$?.unsubscribe();
+    this.subscription?.unsubscribe();
   }
 }
