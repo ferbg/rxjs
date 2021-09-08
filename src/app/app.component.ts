@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -10,8 +10,7 @@ export class AppComponent {
   title = 'rxjs';
 
   ngOnInit() : void {
-    //  with initial value = 0
-    const subject = new BehaviorSubject<number>(0);
+    const subject = new ReplaySubject<number>(3); // buffer 3 values for new subscribers
 
     subject.subscribe({
       next: (v) => console.log(`observerA: ${v}`)
@@ -19,11 +18,13 @@ export class AppComponent {
 
     subject.next(1);
     subject.next(2);
+    subject.next(3);
+    subject.next(4);
 
     subject.subscribe({
       next: (v) => console.log(`observerB: ${v}`)
     });
-    subject.next(3);
+    subject.next(5);
   }
 
 }
