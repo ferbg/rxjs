@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +10,8 @@ export class AppComponent {
   title = 'rxjs';
 
   ngOnInit() : void {
-    const subject = new Subject<number>();
+    //  with initial value = 0
+    const subject = new BehaviorSubject<number>(0);
 
     subject.subscribe({
       next: (v) => console.log(`observerA: ${v}`)
