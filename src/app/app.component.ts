@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -8,24 +8,21 @@ import { Observable, Subscription } from 'rxjs';
 })
 export class AppComponent {
   title = 'rxjs';
-  subscription$ : Subscription | null = null;
 
   ngOnInit() : void {
-    const observable$ : Observable<any> = new Observable( (observer) => {
-      observer.next(1);
-      observer.next(2);
-      observer.next(3);
-      observer.complete();
+    const subject = new Subject<number>();
+
+    subject.subscribe({
+      next: (v) => console.log(`observerA: ${v}`)
     });
 
-    this.subscription$ = observable$.subscribe(
-      ( value: any)  => console.log(value),
-      ( err: any) => {},
-      () => console.info( "completed!" )
-    );
+    subject.next(1);
+    subject.next(2);
+
+    subject.subscribe({
+      next: (v) => console.log(`observerB: ${v}`)
+    });
+    subject.next(3);
   }
 
-  ngOnDestroy() : void {
-    this.subscription$?.unsubscribe();
-  }
 }
