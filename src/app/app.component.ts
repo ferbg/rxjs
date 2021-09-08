@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { interval, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { from, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +12,12 @@ export class AppComponent {
   subscription : Subscription | null = null;
 
   ngOnInit() : void {
-    //  emit values every 1s
-    const intervalCount = interval(1000);
-    //  take the first 5 emitted values
-    const takeFive = intervalCount.pipe(take(5));
-    //  output: 0,1,2,3,4
-    this.subscription = takeFive.subscribe(x => console.log(x));
+    //emit (1,2,3,4,5)
+    const source = from([1, 2, 3, 4, 5]);
+    //add 10 to each value
+    const example = source.pipe(map( ( val :number )  => val + 10));
+    //output: 11,12,13,14,15
+    const subscribe = example.subscribe(( val :number ) => console.log(val));
   }
 
   ngOnDestroy() : void {
